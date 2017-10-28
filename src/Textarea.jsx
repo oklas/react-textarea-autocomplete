@@ -12,7 +12,7 @@ type dataProviderType = string =>
   | Array<Object | string>;
 
 type settingType = {
-  component: ReactClass<*>,
+  component: React$StatelessFunctionalComponent<*>,
   dataProvider: dataProviderType,
   output?: (Object | string, ?string) => string,
 };
@@ -23,18 +23,19 @@ type triggerType = {
   [string]: {|
     output?: (Object | string, ?string) => string,
     dataProvider: dataProviderType,
-    component: ReactClass<*>,
+    component: React$StatelessFunctionalComponent<*>,
   |},
 };
 
 type Props = {
   trigger: triggerType,
-  loadingComponent: ReactClass<*>,
-  onChange?: (SyntheticEvent | Event) => void,
-  minChar?: number,
+  loadingComponent: React$StatelessFunctionalComponent<*>,
+  onChange: ?(SyntheticEvent<*> | Event) => void,
+  minChar: ?number,
   value?: string,
-  style?: Object,
-  containerStyle?: Object,
+  style: ?Object,
+  containerStyle: ?Object,
+  className: ?string,
 };
 
 type State = {
@@ -47,16 +48,13 @@ type State = {
   dataLoading: boolean,
   selectionEnd: number,
   selectionStart: number,
-  component: ?ReactClass<*>,
+  component: ?React$StatelessFunctionalComponent<*>,
 };
 
-class ReactTextareaAutocomplete extends React.Component {
+class ReactTextareaAutocomplete extends React.Component<Props, State> {
   static defaultProps = {
     value: '',
-    style: {},
-    containerStyle: {},
     minChar: 1,
-    onChange: undefined,
   };
 
   constructor(props: Props) {
@@ -265,7 +263,7 @@ class ReactTextareaAutocomplete extends React.Component {
       'trigger',
     ];
 
-    //eslint-disable-next-line
+    // eslint-disable-next-line
     for (const prop in props) {
       if (notSafe.includes(prop)) delete props[prop];
     }
@@ -273,7 +271,7 @@ class ReactTextareaAutocomplete extends React.Component {
     return props;
   };
 
-  changeHandler = (e: SyntheticInputEvent) => {
+  changeHandler = (e: SyntheticInputEvent<*>) => {
     const { trigger, onChange, minChar } = this.props;
     const textarea = e.target;
     const { selectionEnd, selectionStart } = textarea;
@@ -351,7 +349,7 @@ class ReactTextareaAutocomplete extends React.Component {
       >
         <textarea
           {...this.cleanUpProps()}
-          ref={ref => (this.textareaRef = ref)}
+          ref={(ref) => { this.textareaRef = ref; }}
           className={`rta__textarea ${otherProps.className || ''}`}
           onChange={this.changeHandler}
           value={value}

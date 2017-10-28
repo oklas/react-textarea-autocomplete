@@ -3,14 +3,14 @@
 import React from 'react';
 
 type Props = {
-  component: ReactClass<*>,
+  component: React$StatelessFunctionalComponent<*>,
   onSelectHandler: (Object | string) => void,
   item: Object | string,
-  onClickHandler: SyntheticEvent => void,
+  onClickHandler: SyntheticEvent<*> => void,
   selected: boolean,
 };
 
-export default class Item extends React.Component {
+export default class Item extends React.Component<Props, *> {
   selectItem = () => {
     const { item, onSelectHandler } = this.props;
     onSelectHandler(item);

@@ -123,9 +123,12 @@ export default App;
 
 Run `yarn` to fetch dependencies.
 
-Run `yarn dev` for bundling. 
+### Dev playground 
+Run `yarn dev` and open http://localhost:8080 for playground
 
-In the folder run `yarn link` and then in your project folder `yarn link react-textarea-autocomplete` to link together.
+### Build and link 
+
+Run `yarn buil` then in the folder run `yarn link` and then in your project folder `yarn link @webscopeio/react-textarea-autocomplete` to link together.
 
 Your PR's are welcomed! ❤️
 

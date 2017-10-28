@@ -7,7 +7,7 @@ import Item from './Item';
 
 type Props = {
   values: Array<Object | string>,
-  component: ReactClass<*>,
+  component: React$StatelessFunctionalComponent<*>,
   getTextToReplace: (Object | string) => string,
   onSelect: string => void,
 };
@@ -16,7 +16,7 @@ type State = {
   selectedItem: ?Object | ?string,
 };
 
-export default class List extends React.Component {
+export default class List extends React.Component<Props, State> {
   state: State = {
     selectedItem: null,
   };
@@ -43,7 +43,7 @@ export default class List extends React.Component {
     }
   }
 
-  onPressEnter = (e: SyntheticEvent) => {
+  onPressEnter = (e: SyntheticEvent<*>) => {
     e.preventDefault();
 
     const { values } = this.props;

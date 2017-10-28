@@ -57,7 +57,9 @@ class Listener {
       fn,
     };
 
-    return (this.index += 1);
+    this.index += 1;
+
+    return this.index;
   };
 
   remove = (id: number) => {
