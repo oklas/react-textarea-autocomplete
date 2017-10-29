@@ -36,7 +36,7 @@ class App extends Component {
                 .slice(0, 10)
                 .map(({ name, char }) => ({ name, char })),
               component: Item,
-              output: (item, trigger) => item.char,
+              output: (item, trigger) => ({ text: item.char, caretPosition: 'start' }),
             },
           }}
         />

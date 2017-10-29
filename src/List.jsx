@@ -60,7 +60,11 @@ export default class List extends React.Component<Props, State> {
     return values.findIndex(a => this.getId(a) === this.getId(selectedItem));
   };
 
-  getId = (item: Object | string): string => this.props.getTextToReplace(item);
+  getId = (item: Object | string): string | {text: string} => {
+    const textToReplace = this.props.getTextToReplace(item);
+
+    return typeof textToReplace === 'string' ? textToReplace : textToReplace.text;
+  }
 
   props: Props;
 

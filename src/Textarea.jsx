@@ -101,7 +101,7 @@ class ReactTextareaAutocomplete extends React.Component<Props, State> {
     Listeners.stopListen();
   }
 
-  onSelect = (newToken: string) => {
+  onSelect = (newToken: string | {text: string, caretPosition: "start" | "end" | number}) => {
     const { selectionEnd, value: textareaValue } = this.state;
     const { onChange } = this.props;
 
@@ -119,9 +119,13 @@ class ReactTextareaAutocomplete extends React.Component<Props, State> {
     );
 
     const startOfTokenPosition = textToModify.search(/\S*$/);
-    const newCaretPosition = startOfTokenPosition + newToken.length;
-    const modifiedText =
-      textToModify.substring(0, startOfTokenPosition) + newToken;
+
+    const newTokenString = typeof newToken === 'string' ? newToken : newToken.text;
+    const newCaretPosition = typeof newToken === 'string'
+      ? startOfTokenPosition + newTokenString.length
+      : newToken.caretPosition;
+
+    const modifiedText = textToModify.substring(0, startOfTokenPosition) + newTokenString;
 
     // set the new textarea value and after that set the caret back to its position
     this.setState(

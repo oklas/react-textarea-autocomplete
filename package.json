@@ -76,7 +76,6 @@
   "lint-staged": {
     "src/*.{js,jsx}": [
       "eslint src --fix",
-      "flow",
       "git add"
     ]
   },
