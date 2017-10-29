@@ -8,7 +8,7 @@ import Item from './Item';
 type Props = {
   values: Array<Object | string>,
   component: ReactClass<*>,
-  getTextToReplace: (Object | string) => string,
+  getTextToReplace: (Object | string, onSelect?: boolean) => string,
   onSelect: string => void,
 };
 
@@ -71,7 +71,7 @@ export default class List extends React.Component {
 
     const { onSelect, getTextToReplace } = this.props;
 
-    onSelect(getTextToReplace(value));
+    onSelect(getTextToReplace(value, true));
   };
 
   selectItem = (item: Object | string) => {

@@ -48,7 +48,7 @@ yarn add @webscopeio/react-textarea-autocomplete
 ```javascript 
 {
     [triggerChar: string]: {
-        ?output: (item: Object | string, trigger?: string) => string,
+        ?output: (item: Object | string, trigger?: string) => string | { text: string, caretPosition: "start" | "end" | number },
         dataProvider: (token: string) => Promise<Array<Object | string>> | Array<Object | string>,
         component: ReactClass<*>,
     },
@@ -58,7 +58,7 @@ yarn add @webscopeio/react-textarea-autocomplete
 - **dataProvider** is called after each keystroke to get data what the suggestion list should display (array or promise resolving array)
 - **component** is the component for render the item in suggestion list. It has `selected` and `entity` props provided by React Textarea Autocomplete
 - **output** (Optional for string based item. If the item is an object this method is *required*) This function defines text which will be placed into textarea after the user makes a selection.
-
+    In case you want to specify caret position after selecting emoji, you can return object with caretPosition parameter instead of string. Caret position defaults to end.
     Default behavior for string based item is string: `<TRIGGER><ITEM><TRIGGER>`). This method should **always** return a unique string.
 
 ## [Example of usage](http://react-textarea-autocomplete.surge.sh/)

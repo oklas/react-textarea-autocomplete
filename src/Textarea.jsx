@@ -11,17 +11,24 @@ type dataProviderType = string =>
   | Promise<Array<Object | string>>
   | Array<Object | string>;
 
+type caretPositionType = 'start' | 'end' | number;
+
 type settingType = {
   component: ReactClass<*>,
   dataProvider: dataProviderType,
-  output?: (Object | string, ?string) => string,
+  output?: (Object | string, ?string) => string | { text: string, caretPosition: caretPositionType },
 };
 
-type getTextToReplaceType = (Object | string) => string;
+type OutputType = (
+  item: Object | string,
+  ?string,
+) => string | { text: string, caretPosition: caretPositionType };
+
+type getTextToReplaceType = (Object | string, onSelect?: boolean) => string;
 
 type triggerType = {
-  [string]: {|
-    output?: (Object | string, ?string) => string,
+  [triggerChar: string]: {|
+    output?: OutputType,
     dataProvider: dataProviderType,
     component: ReactClass<*>,
   |},
@@ -48,6 +55,7 @@ type State = {
   selectionEnd: number,
   selectionStart: number,
   component: ?ReactClass<*>,
+  caretPosition: caretPositionType,
 };
 
 class ReactTextareaAutocomplete extends React.Component {
@@ -89,6 +97,7 @@ class ReactTextareaAutocomplete extends React.Component {
     selectionEnd: 0,
     selectionStart: 0,
     component: null,
+    caretPosition: 'end',
   };
 
   componentDidMount() {
@@ -121,7 +130,10 @@ class ReactTextareaAutocomplete extends React.Component {
     );
 
     const startOfTokenPosition = textToModify.search(/\S*$/);
-    const newCaretPosition = startOfTokenPosition + newToken.length;
+    const newCaretPosition = this.getNewCaretPosition(
+      startOfTokenPosition,
+      newToken.length,
+    );
     const modifiedText =
       textToModify.substring(0, startOfTokenPosition) + newToken;
 
@@ -143,6 +155,19 @@ class ReactTextareaAutocomplete extends React.Component {
     this.closeAutocomplete();
   };
 
+  getNewCaretPosition = (
+    startOfTokenPosition: number,
+    newTokenLength: number,
+  ) => {
+    const { caretPosition } = this.state;
+    if (typeof caretPosition === 'number') {
+      return caretPosition;
+    } else if (caretPosition === 'start') {
+      return startOfTokenPosition;
+    }
+    return startOfTokenPosition + newTokenLength;
+  };
+
   getTextToReplace = (): ?getTextToReplaceType => {
     const { currentTrigger } = this.state;
     const triggerSettings = this.getCurrentTriggerSettings();
@@ -151,7 +176,7 @@ class ReactTextareaAutocomplete extends React.Component {
 
     const { output } = triggerSettings;
 
-    return (item: Object | string) => {
+    return (item: Object | string, onSelect?: boolean) => {
       if (
         typeof item === 'object' &&
         (!output || typeof output !== 'function')
@@ -160,7 +185,18 @@ class ReactTextareaAutocomplete extends React.Component {
       }
 
       if (output) {
-        return output(item, currentTrigger);
+        const outputValue = output(item, currentTrigger);
+        if (typeof outputValue === 'string') {
+          return outputValue;
+        }
+        const { text, caretPosition } = outputValue;
+        // This needs to be here, so setState triggers only on selection of emoji
+        if (onSelect) {
+          this.setState({
+            caretPosition,
+          });
+        }
+        return text;
       }
 
       // $FlowFixMe
