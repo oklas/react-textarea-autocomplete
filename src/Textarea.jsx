@@ -16,7 +16,10 @@ type caretPositionType = 'start' | 'end' | number;
 type settingType = {
   component: ReactClass<*>,
   dataProvider: dataProviderType,
-  output?: (Object | string, ?string) => string | { text: string, caretPosition: caretPositionType },
+  output?: (
+    Object | string,
+    ?string,
+  ) => string | { text: string, caretPosition: caretPositionType },
 };
 
 type OutputType = (
